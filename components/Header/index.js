@@ -6,16 +6,31 @@ import Button from "../Button";
 // Local Data
 import data from "../../data/portfolio.json";
 
-const Header = ({ handleWorkScroll, handleAboutScroll, isBlog }) => {
+const Header = ({ handleProjectScroll, handleExperienceScroll, handleAboutScroll, isBlog }) => {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [contactDropdownOpen, setContactDropdownOpen] = useState(false);
 
   const { name, showBlog, showResume } = data;
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (contactDropdownOpen && !event.target.closest('.contact-dropdown')) {
+        setContactDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [contactDropdownOpen]);
 
   return (
     <>
@@ -69,30 +84,65 @@ const Header = ({ handleWorkScroll, handleAboutScroll, isBlog }) => {
             >
               {!isBlog ? (
                 <div className="grid grid-cols-1">
-                  <Button onClick={handleWorkScroll}>Work</Button>
+                  <Button onClick={handleExperienceScroll}>Experience</Button>
                   <Button onClick={handleAboutScroll}>About</Button>
+                  <Button onClick={handleProjectScroll}>Project</Button>
                   {showBlog && (
                     <Button onClick={() => router.push("/blog")}>Blog</Button>
                   )}
                   {showResume && (
                     <Button
                       onClick={() =>
-                        window.open("mailto:hello@chetanverma.com")
+                        window.location.href = "mailto:tejkolpek@gmail.com"
                       }
                     >
                       Resume
                     </Button>
                   )}
 
-                  <Button
-                    onClick={() => window.open("mailto:hello@chetanverma.com")}
-                  >
-                    Contact
-                  </Button>
+                  <div className="relative contact-dropdown">
+                    <Button onClick={() => setContactDropdownOpen(!contactDropdownOpen)}>
+                      Contact
+                    </Button>
+                    {contactDropdownOpen && (
+                      <div className={`absolute right-0 top-full mt-2 w-48 p-2 rounded-lg shadow-lg z-50 ${
+                        theme === "dark" ? "bg-slate-800 border border-slate-700" : "bg-white border border-gray-200"
+                      }`}>
+                        <div className="space-y-1">
+                          <button
+                            onClick={() => {
+                              window.location.href = "mailto:tejkolpek@gmail.com";
+                              setContactDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                              theme === "dark" 
+                                ? "hover:bg-slate-700 text-white" 
+                                : "hover:bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            📧 Email Me
+                          </button>
+                          <button
+                            onClick={() => {
+                              window.open("https://calendly.com/tej-kolpek", "_blank");
+                              setContactDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                              theme === "dark" 
+                                ? "hover:bg-slate-700 text-white" 
+                                : "hover:bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            📅 Schedule a Call
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="grid grid-cols-1">
-                  <Button onClick={() => router.push("/")} classes="first:ml-1">
+                  <Button onClick={() => router.push("/")}>
                     Home
                   </Button>
                   {showBlog && (
@@ -101,17 +151,50 @@ const Header = ({ handleWorkScroll, handleAboutScroll, isBlog }) => {
                   {showResume && (
                     <Button
                       onClick={() => router.push("/resume")}
-                      classes="first:ml-1"
                     >
                       Resume
                     </Button>
                   )}
 
-                  <Button
-                    onClick={() => window.open("mailto:hello@chetanverma.com")}
-                  >
-                    Contact
-                  </Button>
+                  <div className="relative contact-dropdown">
+                    <Button onClick={() => setContactDropdownOpen(!contactDropdownOpen)}>
+                      Contact
+                    </Button>
+                    {contactDropdownOpen && (
+                      <div className={`absolute right-0 top-full mt-2 w-48 p-2 rounded-lg shadow-lg z-50 ${
+                        theme === "dark" ? "bg-slate-800 border border-slate-700" : "bg-white border border-gray-200"
+                      }`}>
+                        <div className="space-y-1">
+                          <button
+                            onClick={() => {
+                              window.location.href = "mailto:tejkolpek@gmail.com";
+                              setContactDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                              theme === "dark" 
+                                ? "hover:bg-slate-700 text-white" 
+                                : "hover:bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            📧 Email Me
+                          </button>
+                          <button
+                            onClick={() => {
+                              window.open("https://calendly.com/tej-kolpek", "_blank");
+                              setContactDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                              theme === "dark" 
+                                ? "hover:bg-slate-700 text-white" 
+                                : "hover:bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            📅 Schedule a Call
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </Popover.Panel>
@@ -131,23 +214,59 @@ const Header = ({ handleWorkScroll, handleAboutScroll, isBlog }) => {
         </h1>
         {!isBlog ? (
           <div className="flex">
-            <Button onClick={handleWorkScroll}>Work</Button>
+            <Button onClick={handleExperienceScroll}>Experience</Button>
             <Button onClick={handleAboutScroll}>About</Button>
+            <Button onClick={handleProjectScroll}>Project</Button>
             {showBlog && (
               <Button onClick={() => router.push("/blog")}>Blog</Button>
             )}
             {showResume && (
               <Button
                 onClick={() => router.push("/resume")}
-                classes="first:ml-1"
               >
                 Resume
               </Button>
             )}
 
-            <Button onClick={() => window.open("mailto:hello@chetanverma.com")}>
-              Contact
-            </Button>
+            <div className="relative contact-dropdown">
+              <Button onClick={() => setContactDropdownOpen(!contactDropdownOpen)}>
+                Contact
+              </Button>
+              {contactDropdownOpen && (
+                <div className={`absolute right-0 top-full mt-2 w-48 p-2 rounded-lg shadow-lg z-50 ${
+                  theme === "dark" ? "bg-slate-800 border border-slate-700" : "bg-white border border-gray-200"
+                }`}>
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => {
+                        window.location.href = "mailto:tejkolpek@gmail.com";
+                        setContactDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                        theme === "dark" 
+                          ? "hover:bg-slate-700 text-white" 
+                          : "hover:bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      📧 Email Me
+                    </button>
+                    <button
+                      onClick={() => {
+                        window.open("https://calendly.com/tejkolpek/30min", "_blank");
+                        setContactDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                        theme === "dark" 
+                          ? "hover:bg-slate-700 text-white" 
+                          : "hover:bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      📅 Schedule a Call
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             {mounted && theme && data.darkMode && (
               <Button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -168,13 +287,12 @@ const Header = ({ handleWorkScroll, handleAboutScroll, isBlog }) => {
             {showResume && (
               <Button
                 onClick={() => router.push("/resume")}
-                classes="first:ml-1"
               >
                 Resume
               </Button>
             )}
 
-            <Button onClick={() => window.open("mailto:hello@chetanverma.com")}>
+            <Button onClick={() => window.location.href = "mailto:tejkolpek@gmail.com"}>
               Contact
             </Button>
 

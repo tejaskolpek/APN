@@ -3,3 +3,22 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+# ==============================================
+# Netlify Configuration for Next.js (SSR / ISR)
+# ==============================================
+
+[build]
+  # Run the standard Next.js build
+  command = "npm run build"
+  # Leave publish blank — the Next.js plugin handles this automatically
+  publish = ""
+
+[build.environment]
+  # Ensure Node version is compatible with your Next.js version
+  NODE_VERSION = "18"
+  # Optional: helps if peer dependency warnings appear
+  NPM_FLAGS = "--legacy-peer-deps"
+
+[[plugins]]
+  # Official Next.js plugin (installs automatically via Netlify UI or CLI)
+  package = "@netlify/plugin-nextjs"
